@@ -21,13 +21,21 @@ const buttons: QuickButton[] = [
 
 export function QuickAccessButtons() {
   return (
-    // ✅ grid-cols-5: 화면 크기 상관없이 무조건 한 줄에 5개씩 배치 (PC 우선)
-    // gap-3: 버튼 사이 간격
-    <div className="grid grid-cols-5 gap-3">
+    // ✅ [문제 해결] Tailwind 클래스가 안 먹힐 때를 대비해 style 속성으로 강제 고정
+    // display: 'grid' -> 그리드 사용
+    // gridTemplateColumns: 'repeat(5, 1fr)' -> 무조건 5개 컬럼 생성 (10개면 2줄이 됨)
+    <div 
+      className="gap-3 w-full"
+      style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        gap: '12px' // gap-3와 동일한 간격
+      }}
+    >
       {buttons.map((button, index) => (
         <button
           key={index}
-          // h-[90px]: 정사각형에 가까운 안정적인 비율
+          // h-[90px]: 높이 고정
           className="group relative flex flex-col items-center justify-center gap-2 h-[90px] bg-white/60 backdrop-blur-sm rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-purple-100/50 overflow-hidden hover:scale-[1.02]"
         >
           <div
@@ -38,7 +46,8 @@ export function QuickAccessButtons() {
             {button.icon}
           </div>
 
-          <span className="relative z-10 text-xs font-medium text-gray-600 group-hover:text-white transition-colors duration-300">
+          {/* 텍스트 크기 조절: text-xs (PC에서도 너무 크지 않게) */}
+          <span className="relative z-10 text-xs font-medium text-gray-600 group-hover:text-white transition-colors duration-300 whitespace-nowrap">
             {button.label}
           </span>
         </button>
