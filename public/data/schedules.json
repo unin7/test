@@ -26,5 +26,12 @@
     "title": "단독 콘서트",
     "description": "서울 올림픽홀 (KST 19:00)",
     "type": "concert"
+  },
+  {
+    "id": "5",
+    "date": "2025-02-01T00:00:00Z",
+    "title": "발렌타인 이벤트",
+    "description": "멤버별 초콜릿 만들기",
+    "type": "event"
   }
 ]
