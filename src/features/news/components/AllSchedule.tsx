@@ -18,11 +18,10 @@ const monthNames = [
 export function AllSchedule() {
   const { data: events, loading } = useJsonData<ScheduleItem[]>('schedules');
   
-  // 현재 날짜를 데이터에 맞춰 2026년 1월로 설정
+  // 데이터에 맞춰 2026년 1월로 시작
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1)); 
   const [selectedEvent, setSelectedEvent] = useState<ScheduleItem | null>(null);
 
-  // UTC -> KST 변환
   const parseKST = (isoString: string) => {
     const utcDate = new Date(isoString);
     const kstDate = new Date(utcDate.getTime() + (9 * 60 * 60 * 1000));
@@ -73,7 +72,6 @@ export function AllSchedule() {
       case 'birthday': return 'bg-pink-50 text-pink-600 border-pink-100';
       case 'comeback': return 'bg-purple-50 text-purple-600 border-purple-100';
       case 'concert': return 'bg-blue-50 text-blue-600 border-blue-100';
-      case 'broadcast': return 'bg-yellow-50 text-yellow-600 border-yellow-100';
       default: return 'bg-gray-50 text-gray-600 border-gray-100';
     }
   };
@@ -81,34 +79,36 @@ export function AllSchedule() {
   if (loading) return <div className="h-full flex items-center justify-center text-gray-400">Loading...</div>;
 
   return (
-    <div className="h-full flex flex-col max-w-7xl mx-auto p-4 space-y-4">
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
       
-      {/* 1. Header */}
-      <div className="flex items-center justify-between px-2">
-        <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <CalendarIcon className="w-6 h-6 text-purple-500" />
-          {monthNames[currentDate.getMonth()]} 
-          <span className="font-light text-gray-400">{currentDate.getFullYear()}</span>
-        </h3>
-        <div className="flex gap-1 bg-white p-1 rounded-lg border border-gray-100 shadow-sm">
-          <button onClick={previousMonth} className="p-1.5 hover:bg-gray-50 rounded-md text-gray-500 hover:text-purple-600 transition-colors"><ChevronLeft className="w-5 h-5" /></button>
-          <button onClick={nextMonth} className="p-1.5 hover:bg-gray-50 rounded-md text-gray-500 hover:text-purple-600 transition-colors"><ChevronRight className="w-5 h-5" /></button>
-        </div>
-      </div>
-
-      {/* 2. Main Content (좌우 레이아웃 복구) */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
+      {/* 1. 상단 그리드 레이아웃 (달력 2 : 상세 1) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left: Calendar Grid (테두리 없는 미니멀 스타일) */}
-        <div className="flex-[3] bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-100 shadow-sm p-6 flex flex-col">
+        {/* Left: Calendar */}
+        <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-[2rem] p-6 shadow-sm border border-gray-100">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6 px-2">
+            <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5 text-purple-500" />
+              {monthNames[currentDate.getMonth()]} 
+              <span className="font-light text-gray-400">{currentDate.getFullYear()}</span>
+            </h3>
+            <div className="flex gap-1 bg-white p-1 rounded-xl border border-gray-100">
+              <button onClick={previousMonth} className="p-1.5 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-purple-600"><ChevronLeft className="w-5 h-5" /></button>
+              <button onClick={nextMonth} className="p-1.5 hover:bg-gray-50 rounded-lg text-gray-400 hover:text-purple-600"><ChevronRight className="w-5 h-5" /></button>
+            </div>
+          </div>
+
+          {/* Weekdays */}
           <div className="grid grid-cols-7 mb-2">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-              <div key={d} className="text-center text-xs font-semibold text-gray-400 uppercase tracking-wider py-2">{d}</div>
+              <div key={d} className="text-center text-xs font-bold text-gray-300 uppercase tracking-wider py-2">{d}</div>
             ))}
           </div>
-          
-          <div className="flex-1 grid grid-cols-7 grid-rows-6 gap-2">
-            {Array.from({ length: startingDayOfWeek }).map((_, i) => <div key={`empty-${i}`} />)}
+
+          {/* Days */}
+          <div className="grid grid-cols-7 gap-y-2 gap-x-1">
+            {Array.from({ length: startingDayOfWeek }).map((_, i) => <div key={`empty-${i}`} className="h-14 sm:h-20" />)}
             
             {Array.from({ length: daysInMonth }).map((_, index) => {
               const day = index + 1;
@@ -116,47 +116,50 @@ export function AllSchedule() {
               const isSelected = selectedEvent && parseKST(selectedEvent.date).dateStr.endsWith(`-${String(day).padStart(2, '0')}`);
 
               return (
-                <button
-                  key={day}
-                  onClick={() => event && setSelectedEvent(event)}
-                  className={`
-                    relative flex flex-col items-center justify-start pt-2 rounded-2xl transition-all duration-200
-                    ${event ? 'hover:bg-purple-50 cursor-pointer' : 'hover:bg-gray-50/50 cursor-default'}
-                    ${isSelected ? 'bg-purple-50 ring-2 ring-purple-100 z-10' : ''}
-                  `}
-                >
-                  <span className={`
-                    w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium transition-colors mb-1
-                    ${isSelected ? 'bg-purple-500 text-white shadow-md' : 'text-gray-600'}
-                  `}>
+                <div key={day} className="h-14 sm:h-20 relative flex flex-col items-center justify-start group">
+                  <button
+                    onClick={() => event && setSelectedEvent(event)}
+                    className={`
+                      w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 relative z-10 mb-1
+                      ${isSelected 
+                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-200 scale-110' 
+                        : event 
+                          ? 'text-gray-800 hover:bg-purple-50 cursor-pointer' 
+                          : 'text-gray-400 cursor-default'
+                      }
+                    `}
+                  >
                     {day}
-                  </span>
-                  
-                  {event && (
-                    <div className="flex flex-col items-center w-full px-1">
-                      <span className="text-lg transform group-hover:scale-110 transition-transform">{getEventIcon(event.type)}</span>
-                      <span className={`text-[10px] w-full truncate text-center px-1 rounded-md mt-0.5 font-medium
-                        ${event.type === 'birthday' ? 'text-pink-500 bg-pink-50' : 
-                          event.type === 'broadcast' ? 'text-yellow-600 bg-yellow-50' : 'text-gray-500 bg-gray-100'}
-                      `}>
-                        {event.title}
-                      </span>
+                    {event && !isSelected && (
+                      <span className="absolute -bottom-1 w-1 h-1 bg-purple-400 rounded-full"></span>
+                    )}
+                  </button>
+
+                  {/* Icon (hover or always visible if ample space) */}
+                  {event && !isSelected && (
+                    <div className="hidden sm:flex text-xs opacity-50 grayscale group-hover:grayscale-0 transition-all">
+                      {getEventIcon(event.type)}
                     </div>
                   )}
-                </button>
+                </div>
               );
             })}
           </div>
         </div>
 
-        {/* Right: Detail Sidebar (우측 고정) */}
-        <div className="flex-1 lg:max-w-xs bg-white/80 backdrop-blur-sm rounded-3xl border border-purple-100 shadow-sm p-6 flex flex-col h-full">
-          <h4 className="text-gray-800 font-bold mb-6 flex items-center gap-2">Details</h4>
-          
+        {/* Right: Details Panel */}
+        <div className="lg:col-span-1 bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 shadow-sm border border-purple-100 flex flex-col relative overflow-hidden min-h-[400px]">
+          {/* Deco Background */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-3xl opacity-60 -mr-8 -mt-8 pointer-events-none"></div>
+
+          <h4 className="text-gray-800 font-bold mb-6 flex items-center gap-2 relative z-10">Event Details</h4>
+
           {selectedEvent ? (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-300 flex-1 flex flex-col">
-              <div className="aspect-video rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center mb-6 border border-gray-100 shadow-inner">
-                <span className="text-6xl drop-shadow-sm">{getEventIcon(selectedEvent.type)}</span>
+            <div className="animate-in fade-in slide-in-from-right-4 duration-500 relative z-10 flex-1 flex flex-col">
+              <div className="w-full aspect-[4/3] bg-gradient-to-br from-gray-50 to-purple-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-gray-100">
+                <span className="text-6xl drop-shadow-sm transform hover:scale-110 transition-transform duration-300">
+                  {getEventIcon(selectedEvent.type)}
+                </span>
               </div>
               
               <div className="space-y-4">
@@ -167,31 +170,75 @@ export function AllSchedule() {
                   <h3 className="text-xl font-bold text-gray-800 leading-tight">{selectedEvent.title}</h3>
                 </div>
                 
-                <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl border border-gray-100 leading-relaxed">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   {selectedEvent.description}
                 </p>
 
-                <div className="space-y-3 pt-2 text-sm text-gray-500">
-                   <div className="flex items-center gap-3">
+                <div className="pt-4 border-t border-gray-100 space-y-2">
+                   <div className="flex items-center gap-3 text-xs font-medium text-gray-500">
                      <Clock className="w-4 h-4 text-purple-400" />
-                     <span className="font-medium">{parseKST(selectedEvent.date).timeStr} (KST)</span>
+                     {parseKST(selectedEvent.date).timeStr} (KST)
                    </div>
-                   <div className="flex items-center gap-3">
+                   <div className="flex items-center gap-3 text-xs font-medium text-gray-500">
                      <MapPin className="w-4 h-4 text-purple-400" />
-                     <span>{selectedEvent.type === 'concert' ? 'Seoul, Korea' : 'Online Broadcast'}</span>
+                     {selectedEvent.type === 'concert' ? 'Seoul' : 'Online'}
                    </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-gray-400 opacity-50 space-y-3">
-              <CalendarIcon className="w-12 h-12 stroke-1" />
-              <p className="text-sm font-light text-center">날짜를 선택하여<br/>상세 정보를 확인하세요</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-gray-300 relative z-10 opacity-60">
+              <CalendarIcon className="w-16 h-16 mx-auto mb-4 stroke-1" />
+              <p className="text-sm font-light text-center">날짜를 선택하면<br/>상세 정보가 표시됩니다</p>
             </div>
           )}
         </div>
-
       </div>
+
+      {/* 2. 하단 타임라인 (Upcoming Events) */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] p-6 shadow-sm border border-gray-100">
+        <h4 className="text-gray-800 font-bold mb-4 px-2">Upcoming Schedule</h4>
+        <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+          {events && events.map((event) => {
+            const kst = parseKST(event.date);
+            const isSelected = selectedEvent?.id === event.id;
+            return (
+              <button
+                key={event.id}
+                onClick={() => {
+                   setSelectedEvent(event);
+                   // 해당 월로 이동 필요시 로직 추가 가능
+                   // setCurrentDate(kst.dateObj); 
+                }}
+                className={`
+                  flex-shrink-0 w-64 p-4 rounded-2xl transition-all duration-300 border text-left group
+                  ${isSelected 
+                    ? 'bg-purple-50 border-purple-200 shadow-md scale-[1.02]' 
+                    : 'bg-white border-gray-100 hover:border-purple-100 hover:shadow-sm'
+                  }
+                `}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                    {getEventIcon(event.type)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-sm font-bold mb-0.5 truncate ${isSelected ? 'text-purple-900' : 'text-gray-800'}`}>
+                      {event.title}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <span className="text-purple-500 font-medium">{kst.dateStr.slice(5)}</span>
+                      <span className="w-0.5 h-2 bg-gray-300 rounded-full"></span>
+                      <span className="truncate">{event.type}</span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
     </div>
   );
 }
