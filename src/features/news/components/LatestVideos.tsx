@@ -1,5 +1,4 @@
 import { Youtube } from "lucide-react";
-// ✅ Hook 교체
 import { useJsonData } from '../../../hooks/useJsonData';
 
 interface VideoItem {
@@ -7,13 +6,12 @@ interface VideoItem {
   title: string;
   thumbnail: string;
   url: string;
-  channelName?: string; // 데이터에 없을 수 있으므로 옵셔널
+  channelName?: string;
   channelProfile?: string;
   date: string;
 }
 
 export function LatestVideos() {
-  // ✅ useJsonData('youtube') 사용
   const { data: videos, loading } = useJsonData<VideoItem[]>('youtube');
 
   return (
