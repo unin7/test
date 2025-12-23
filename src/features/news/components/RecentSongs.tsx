@@ -1,7 +1,6 @@
 import { Music } from "lucide-react";
 import { useJsonData } from '../../../hooks/useJsonData';
 
-// ✅ 제공해주신 JSON 데이터 구조에 맞춘 인터페이스
 interface SongItem {
   id: string;
   title: string;
@@ -13,7 +12,6 @@ interface SongItem {
 }
 
 export function RecentSongs() {
-  // ✅ youtube_music.json 데이터를 불러옴
   const { data: songs, loading } = useJsonData<SongItem[]>('youtube_music');
 
   return (
@@ -31,13 +29,13 @@ export function RecentSongs() {
             <div key={song.id} className="space-y-2 group">
               {/* 썸네일 */}
               <a
-                href={song.videoUrl} // ✅ videoUrl 사용
+                href={song.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block aspect-video rounded-xl overflow-hidden bg-gray-100 relative shadow-sm group-hover:shadow-md transition-all"
               >
                 <img
-                  src={song.thumbnailUrl} // ✅ thumbnailUrl 사용
+                  src={song.thumbnailUrl}
                   alt={song.title}
                   className="w-full h-full object-cover"
                 />
@@ -46,7 +44,7 @@ export function RecentSongs() {
               {/* 정보 */}
               <div className="min-w-0">
                 <a
-                  href={song.videoUrl} // ✅ videoUrl 사용
+                  href={song.videoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-sm text-gray-800 line-clamp-2 hover:text-purple-600 font-medium leading-snug"
@@ -54,7 +52,7 @@ export function RecentSongs() {
                   {song.title}
                 </a>
                 <div className="flex items-center gap-1 mt-1">
-                   {/* 날짜 표시 (ISO 날짜 포맷팅) */}
+                   {/* 날짜 표시 (ISO 날짜에서 YYYY-MM-DD 추출) */}
                    <p className="text-xs text-gray-500">
                      {song.time.split('T')[0]}
                    </p>
