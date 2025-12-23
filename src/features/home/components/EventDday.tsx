@@ -18,6 +18,7 @@ export function EventDday() {
     const nowKst = getKstDate();
     nowKst.setUTCHours(0, 0, 0, 0); 
 
+    // 필터 없이 무조건 4개 가져오기 (디버깅용 안전장치: 필터 제거함)
     return schedules.map(event => {
       const eventKst = getKstDate(event.date);
       const eventDateOnly = new Date(eventKst);
@@ -28,13 +29,16 @@ export function EventDday() {
       
       return { ...event, dDayVal, eventKst };
     })
-    .filter(e => e.dDayVal >= 0) 
-    .sort((a, b) => a.dDayVal - b.dDayVal)
-    .slice(0, 4);
+    .sort((a, b) => a.dDayVal - b.dDayVal) // 가까운 순 정렬
+    .slice(0, 4); // 무조건 4개 표시
   };
 
   const upcomingEvents = getUpcomingEvents();
-  const getDdayString = (val: number) => (val === 0 ? "D-Day" : `D-${val}`);
+  const getDdayString = (val: number) => {
+    if (val === 0) return "D-Day";
+    if (val < 0) return `D+${Math.abs(val)}`; // 지난 일정도 표시
+    return `D-${val}`;
+  };
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -98,7 +102,7 @@ export function EventDday() {
         {(!upcomingEvents || upcomingEvents.length === 0) && (
           <div className="flex flex-col items-center justify-center h-32 text-gray-400 opacity-60">
             <Calendar className="w-8 h-8 mb-2 stroke-1" />
-            <span className="text-xs">예정된 일정이 없습니다</span>
+            <span className="text-xs">일정이 없습니다</span>
           </div>
         )}
       </div>
