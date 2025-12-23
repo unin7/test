@@ -1,6 +1,30 @@
 [
-  { "isoDate": "2025-12-22T20:00:00Z", "title": "정기 방송: 주간 스텔라 뉴스", "type": "FIXED", "desc": "한 주간의 멤버별 활동 소식과 커뮤니티 팬아트를 함께 구경하는 정기 방송입니다.", "isImportant": true },
-  { "isoDate": "2025-12-23T22:00:00Z", "title": "게릴라: 신작 호러 게임 찍먹", "type": "BROADCAST", "desc": "요즘 유행하는 신작 공포 게임을 같이 해봐요! 심장이 약하신 분들은 주의!", "isImportant": false },
-  { "isoDate": "2025-12-25T18:00:00Z", "title": "🎄 크리스마스 기념 릴레이 라이브", "type": "SPECIAL", "desc": "성탄절을 맞아 전 멤버가 참여하는 릴레이 방송과 깜짝 선물이 준비되어 있습니다.", "isImportant": true },
-  { "isoDate": "2025-12-27T19:00:00Z", "title": "노래뱅: 신청곡 100선", "type": "FIXED", "desc": "파스텔 여러분이 직접 신청해주신 곡들로 채우는 4시간 연속 노래 방송입니다.", "isImportant": false }
+  {
+    "id": "1",
+    "date": "2025-01-09T00:00:00Z",
+    "title": "칸나 생일",
+    "description": "Happy Canna Day! 🎂",
+    "type": "birthday"
+  },
+  {
+    "id": "2",
+    "date": "2025-01-15T09:00:00Z",
+    "title": "미니 3집 발매",
+    "description": "새로운 앨범 'STELLAR' 발매",
+    "type": "release"
+  },
+  {
+    "id": "3",
+    "date": "2025-01-20T08:00:00Z",
+    "title": "뮤직뱅크 컴백",
+    "description": "KBS 뮤직뱅크 첫 방송",
+    "type": "broadcast"
+  },
+  {
+    "id": "4",
+    "date": "2025-01-25T10:00:00Z",
+    "title": "단독 콘서트",
+    "description": "서울 올림픽홀 (KST 19:00)",
+    "type": "concert"
+  }
 ]
