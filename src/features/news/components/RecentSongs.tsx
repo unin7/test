@@ -1,34 +1,72 @@
 import { Music } from "lucide-react";
+import { useJsonData } from '../../../hooks/useJsonData';
+
+// ✅ 제공해주신 JSON 데이터 구조에 맞춘 인터페이스
+interface SongItem {
+  id: string;
+  title: string;
+  thumbnailUrl: string; // JSON: thumbnailUrl
+  profileImg: string;   // JSON: profileImg
+  videoUrl: string;     // JSON: videoUrl
+  name: string;         // JSON: name (아티스트)
+  time: string;         // JSON: time (ISO Date String)
+}
 
 export function RecentSongs() {
-  const songs = [
-    { title: "Shut Down", album: "BORN PINK", date: "2022.09.16" },
-    { title: "Pink Venom", album: "BORN PINK", date: "2022.08.19" },
-  ];
+  // ✅ youtube_music.json 데이터를 불러옴
+  const { data: songs, loading } = useJsonData<SongItem[]>('youtube_music');
 
   return (
     <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-purple-100/50">
       <div className="flex items-center gap-2 mb-4">
-        <Music className="w-5 h-5 text-purple-500" />
-        <h3 className="text-gray-800">최근 발매곡</h3>
+        <Music className="w-4 h-4 text-purple-500" />
+        <h4 className="text-gray-800 font-medium">Recent Songs</h4>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        {songs.map((song, idx) => (
-          <div
-            key={idx}
-            className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl"
-          >
-            <div className="w-full aspect-square bg-gradient-to-br from-purple-300 to-pink-300 rounded-lg mb-3 flex items-center justify-center">
-              <Music className="w-12 h-12 text-white/70" />
+      {loading ? (
+        <div className="text-center text-gray-500 py-8">로딩 중...</div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {songs && songs.map((song) => (
+            <div key={song.id} className="space-y-2 group">
+              {/* 썸네일 */}
+              <a
+                href={song.videoUrl} // ✅ videoUrl 사용
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block aspect-video rounded-xl overflow-hidden bg-gray-100 relative shadow-sm group-hover:shadow-md transition-all"
+              >
+                <img
+                  src={song.thumbnailUrl} // ✅ thumbnailUrl 사용
+                  alt={song.title}
+                  className="w-full h-full object-cover"
+                />
+              </a>
+
+              {/* 정보 */}
+              <div className="min-w-0">
+                <a
+                  href={song.videoUrl} // ✅ videoUrl 사용
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-sm text-gray-800 line-clamp-2 hover:text-purple-600 font-medium leading-snug"
+                >
+                  {song.title}
+                </a>
+                <div className="flex items-center gap-1 mt-1">
+                   {/* 날짜 표시 (ISO 날짜 포맷팅) */}
+                   <p className="text-xs text-gray-500">
+                     {song.time.split('T')[0]}
+                   </p>
+                </div>
+              </div>
             </div>
-
-            <p className="text-sm text-gray-800 mb-1">{song.title}</p>
-            <p className="text-xs text-gray-600">{song.album}</p>
-            <p className="text-xs text-purple-500 mt-1">{song.date}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+          {(!songs || songs.length === 0) && (
+             <div className="col-span-4 text-center text-gray-400 text-sm">노래가 없습니다.</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
