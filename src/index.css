@@ -68,10 +68,15 @@
   :root, :host {
     --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --color-red-50: oklch(0.97 0.014 25.0);
+    --color-red-100: oklch(0.94 0.035 25.0);
+    --color-red-200: oklch(0.89 0.07 25.0);
     --color-red-300: oklch(.808 .114 19.571);
     --color-red-400: oklch(.704 .191 22.216);
     --color-red-500: oklch(.637 .237 25.331);
     --color-red-600: oklch(.577 .245 27.325);
+    --color-orange-50: oklch(0.98 0.016 73.684);
+    --color-orange-100: oklch(0.95 0.043 76.8);
     --color-orange-200: oklch(.901 .076 70.697);
     --color-orange-300: oklch(.837 .128 66.29);
     --color-orange-400: oklch(.75 .183 55.934);
@@ -108,7 +113,8 @@
     --color-cyan-400: oklch(0.783 0.159 233.526);
     --color-cyan-500: oklch(0.706 0.169 233.526);
     --color-cyan-600: oklch(0.58 0.19 233.526);
-    --color-indigo-50: oklch(.962 .018 272.314);
+    --color-indigo-50: oklch(0.97 0.014 275.0);
+    --color-indigo-100: oklch(0.94 0.03 275.0);
     --color-indigo-200: oklch(.87 .065 274.039);
     --color-indigo-300: oklch(.785 .115 274.713);
     --color-indigo-400: oklch(.673 .182 276.935);
@@ -123,6 +129,10 @@
     --color-purple-600: oklch(.558 .288 302.321);
     --color-purple-700: oklch(.496 .265 301.924);
     --color-purple-800: oklch(.438 .218 303.724);
+    --color-violet-50: oklch(0.975 0.01 292.0);
+    --color-violet-100: oklch(0.95 0.03 292.0);
+    --color-violet-200: oklch(0.9 0.06 292.0);
+    --color-violet-500: oklch(0.65 0.23 292.0);
     --color-pink-100: oklch(0.948 0.028 342.258);
     --color-pink-200: oklch(0.899 0.061 343.231);
     --color-pink-400: oklch(.718 .202 349.761);
@@ -140,6 +150,10 @@
     --color-slate-500: oklch(.554 .046 257.417);
     --color-slate-600: oklch(.446 .043 257.281);
     --color-slate-700: oklch(.372 .044 257.287);
+    --color-amber-50: oklch(0.98 0.02 85.0);
+    --color-amber-100: oklch(0.96 0.05 85.0);
+    --color-amber-200: oklch(0.9 0.09 85.0);
+    --color-amber-500: oklch(0.7 0.17 85.0);
     --color-gray-50: oklch(.985 .002 247.839);
     --color-gray-100: oklch(.967 .003 264.542);
     --color-gray-200: oklch(.928 .006 264.531);
@@ -536,6 +550,119 @@
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); 
   }
   .group-hover\:text-emerald-500:is(:where(.group):hover *) { color: var(--color-emerald-500); }
+
+  .group:hover .group-hover\:text-gray-700 {
+    color: var(--color-gray-700);
+  }
+  
+  .group:hover .group-hover\:text-orange-500 {
+    color: var(--color-orange-500);
+  }
+  
+  .group:hover .group-hover\:text-blue-500 {
+    color: var(--color-blue-500);
+  }
+  
+  .group:hover .group-hover\:text-emerald-500 {
+    color: var(--color-emerald-500);
+  }
+  
+  .group:hover .group-hover\:text-violet-500 {
+    color: var(--color-violet-500);
+  }
+  
+  .group:hover .group-hover\:text-red-500 {
+    color: var(--color-red-500);
+  }
+  
+  .group:hover .group-hover\:text-rose-500 {
+    color: var(--color-rose-500);
+  }
+  
+  .group:hover .group-hover\:text-indigo-500 {
+    color: var(--color-indigo-500);
+  }
+  
+  .group:hover .group-hover\:text-amber-500 {
+    color: var(--color-amber-500);
+  }
+
+  .border-gray-100 {
+    border-color: var(--color-gray-100);
+  }
+  
+  /* 테마별 호버 테두리 */
+  .hover\:border-orange-200:hover {
+    border-color: var(--color-orange-200);
+  }
+  
+  .hover\:border-blue-200:hover {
+    border-color: var(--color-blue-200);
+  }
+  
+  .hover\:border-emerald-200:hover {
+    border-color: var(--color-emerald-200);
+  }
+  
+  .hover\:border-violet-200:hover {
+    border-color: var(--color-violet-200);
+  }
+  
+  .hover\:border-red-200:hover {
+    border-color: var(--color-red-200);
+  }
+  
+  .hover\:border-rose-200:hover {
+    border-color: var(--color-rose-200);
+  }
+  
+  .hover\:border-indigo-200:hover {
+    border-color: var(--color-indigo-200);
+  }
+  
+  .hover\:border-amber-200:hover {
+    border-color: var(--color-amber-200);
+  }
+
+  .hover\:shadow-orange-100:hover {
+    --tw-shadow-color: var(--color-orange-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-blue-100:hover {
+    --tw-shadow-color: var(--color-blue-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-emerald-100:hover {
+    --tw-shadow-color: var(--color-emerald-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-violet-100:hover {
+    --tw-shadow-color: var(--color-violet-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-red-100:hover {
+    --tw-shadow-color: var(--color-red-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-rose-100:hover {
+    --tw-shadow-color: var(--color-rose-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-indigo-100:hover {
+    --tw-shadow-color: var(--color-indigo-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+  
+  .hover\:shadow-amber-100:hover {
+    --tw-shadow-color: var(--color-amber-100);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
   
   .pointer-events-none {
     pointer-events: none;
@@ -2057,6 +2184,7 @@
   .text-indigo-500 {
     color: var(--color-indigo-500);
   }
+  
 
   .text-orange-300 {
     color: var(--color-orange-300);
@@ -2066,6 +2194,30 @@
     color: var(--color-orange-400);
   }
 
+  .text-orange-500 {
+    color: var(--color-orange-500);
+  }
+
+  .text-violet-500 {
+    color: var(--color-violet-500);
+  }
+  
+  .text-red-500 {
+    color: var(--color-red-500);
+  }
+  
+  .text-rose-500 {
+    color: var(--color-rose-500);
+  }
+  
+  .text-indigo-500 {
+    color: var(--color-indigo-500);
+  }
+  
+  .text-amber-500 {
+    color: var(--color-amber-500);
+  }
+  
   .text-pink-400 {
     color: var(--color-pink-400);
   }
@@ -2461,6 +2613,37 @@
   @media (hover: hover) {
     .hover\:bg-gray-50:hover {
       background-color: var(--color-gray-50);
+    }
+    .hover\:bg-orange-50:hover {
+      background-color: var(--color-orange-50);
+    }
+    
+    .hover\:bg-blue-50:hover {
+      background-color: var(--color-blue-50);
+    }
+    
+    .hover\:bg-emerald-50:hover {
+      background-color: var(--color-emerald-50);
+    }
+    
+    .hover\:bg-violet-50:hover {
+      background-color: var(--color-violet-50);
+    }
+    
+    .hover\:bg-red-50:hover {
+      background-color: var(--color-red-50);
+    }
+    
+    .hover\:bg-rose-50:hover {
+      background-color: var(--color-rose-50);
+    }
+    
+    .hover\:bg-indigo-50:hover {
+      background-color: var(--color-indigo-50);
+    }
+    
+    .hover\:bg-amber-50:hover {
+      background-color: var(--color-amber-50);
     }
   }
 
