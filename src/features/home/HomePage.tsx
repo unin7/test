@@ -1,7 +1,7 @@
 import { LiveStatusPanel } from './components/LiveStatusPanel';
 import { BannerCarousel } from './components/BannerCarousel';
 import { QuickAccessButtons } from './components/QuickAccessButtons';
-import { TodaySchedule } from './components/TodaySchedule';
+import { EventDday } from './components/EventDday';
 import { TodoList } from './components/TodoList';
 import { RecentTweets } from './components/RecentTweets';
 import { LatestVideos } from './components/LatestVideos';
@@ -35,7 +35,7 @@ export function HomePage() {
 
           {/* 스케줄 & 투두 (가로 배치) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <TodaySchedule />
+            <EventDday />
             <TodoList />
           </div>
 
