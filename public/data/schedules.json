@@ -1,37 +1,37 @@
 [
   {
     "id": "1",
-    "date": "2025-01-09T00:00:00Z",
-    "title": "칸나 생일",
-    "description": "Happy Canna Day! 🎂",
+    "date": "2025-01-08T15:00:00Z",
+    "title": "JISOO Birthday",
+    "description": "Happy Birthday to JISOO! 🎂",
     "type": "birthday"
   },
   {
     "id": "2",
     "date": "2025-01-15T09:00:00Z",
-    "title": "미니 3집 발매",
-    "description": "새로운 앨범 'STELLAR' 발매",
-    "type": "release"
+    "title": "New Album Release",
+    "description": "새 미니앨범 발매! 많은 스트리밍 부탁드립니다.",
+    "type": "comeback"
   },
   {
     "id": "3",
     "date": "2025-01-20T08:00:00Z",
-    "title": "뮤직뱅크 컴백",
-    "description": "KBS 뮤직뱅크 첫 방송",
+    "title": "Music Bank",
+    "description": "KBS Music Bank 컴백 무대",
     "type": "broadcast"
   },
   {
     "id": "4",
     "date": "2025-01-25T10:00:00Z",
-    "title": "단독 콘서트",
-    "description": "서울 올림픽홀 (KST 19:00)",
+    "title": "Fan Meeting",
+    "description": "서울 팬미팅 - 티켓팅 오픈",
     "type": "concert"
   },
   {
     "id": "5",
-    "date": "2025-02-01T00:00:00Z",
-    "title": "발렌타인 이벤트",
-    "description": "멤버별 초콜릿 만들기",
+    "date": "2025-02-01T11:00:00Z",
+    "title": "Valentine Event",
+    "description": "멤버별 초콜릿 만들기 (KST 20:00)",
     "type": "event"
   }
 ]
