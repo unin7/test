@@ -70,27 +70,30 @@ export function AllSchedule() {
 
   const getEventColor = (type: ScheduleItem['type']) => {
     switch (type) {
-      case 'birthday': return 'bg-pink-100 text-pink-600';
-      case 'album': return 'bg-purple-100 text-purple-600';
-      case 'concert': return 'bg-blue-100 text-blue-600';
-      case 'broadcast': return 'bg-yellow-100 text-yellow-700';
-      default: return 'bg-green-100 text-green-600';
+      case 'birthday': return 'bg-pink-100 text-pink-600 ring-pink-200';
+      case 'album': return 'bg-purple-100 text-purple-600 ring-purple-200';
+      case 'concert': return 'bg-blue-100 text-blue-600 ring-blue-200';
+      case 'broadcast': return 'bg-yellow-100 text-yellow-700 ring-yellow-200';
+      default: return 'bg-green-100 text-green-600 ring-green-200';
     }
   };
 
   return (
-    // ✅ 중요: min-w-[1100px]를 주어 강제로 가로 폭을 확보함 (반응형으로 깨지는 것 방지)
-    <div className="w-full h-full p-6 overflow-x-auto">
-      <div className="min-w-[1100px] grid grid-cols-12 gap-6 h-[560px]">
+    // [1] 최상위 컨테이너: 가로 스크롤 허용 (overflow-x-auto)
+    <div className="w-full h-full p-4 overflow-x-auto">
+      
+      {/* [2] 배치 컨테이너: Flex Row 강제 + 최소 너비 1200px 고정 
+          -> 화면이 좁아도 절대 세로로 떨어지지 않고 스크롤이 생김 */}
+      <div className="min-w-[1200px] h-[600px] flex flex-row gap-5">
         
-        {/* 1. Left: List (3칸) */}
-        <div className="col-span-3 bg-white/60 backdrop-blur-md rounded-3xl p-5 shadow-sm border border-white/50 flex flex-col h-full overflow-hidden">
+        {/* 1. Left: List (고정 너비 280px) */}
+        <div className="w-[280px] shrink-0 bg-white/60 backdrop-blur-md rounded-3xl p-5 shadow-sm border border-white/50 flex flex-col h-full overflow-hidden">
           <div className="flex items-center gap-2 mb-4 pl-1">
             <Clock className="w-4 h-4 text-purple-500" />
             <h4 className="text-gray-800 font-bold text-sm">Upcoming</h4>
           </div>
           
-          <div className="flex-1 overflow-y-auto pr-2 space-y-2.5 scrollbar-thin scrollbar-thumb-purple-100 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-purple-100 scrollbar-track-transparent">
             {schedules?.map((event) => (
               <button
                 key={event.id}
@@ -124,8 +127,8 @@ export function AllSchedule() {
           </div>
         </div>
 
-        {/* 2. Center: Calendar (6칸) */}
-        <div className="col-span-6 bg-white/70 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-purple-100 flex flex-col h-full">
+        {/* 2. Center: Calendar (유연한 너비 flex-1) */}
+        <div className="flex-1 bg-white/70 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-purple-100 flex flex-col h-full">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-gray-800 font-bold flex items-center gap-2 text-xl">
               <CalendarIcon className="w-5 h-5 text-purple-500" />
@@ -141,14 +144,16 @@ export function AllSchedule() {
             </div>
           </div>
 
+          {/* Weekdays */}
           <div className="grid grid-cols-7 mb-2">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => (
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
               <div key={day} className="text-center text-xs font-bold text-gray-400 py-1">
                 {day}
               </div>
             ))}
           </div>
 
+          {/* Days Grid */}
           <div className="grid grid-cols-7 gap-2 flex-1 content-start">
             {Array.from({ length: startingDayOfWeek }).map((_, i) => <div key={`empty-${i}`} />)}
             {Array.from({ length: daysInMonth }).map((_, i) => {
@@ -178,8 +183,8 @@ export function AllSchedule() {
           </div>
         </div>
 
-        {/* 3. Right: Detail (3칸) */}
-        <div className="col-span-3 bg-white/60 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-white/50 flex flex-col justify-center text-center h-full relative overflow-hidden">
+        {/* 3. Right: Detail (고정 너비 300px) */}
+        <div className="w-[300px] shrink-0 bg-white/60 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-white/50 flex flex-col justify-center text-center h-full relative overflow-hidden">
           {selectedEvent ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col justify-center">
                <div className="absolute -top-10 -right-10 text-[140px] opacity-5 pointer-events-none grayscale select-none">
