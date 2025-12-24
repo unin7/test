@@ -25,8 +25,12 @@ export function WikiGuideSection() {
     }
   }, [allGuides, slug]);
 
+  // ✅ [수정] 스크롤 감지 (IntersectionObserver)
   useEffect(() => {
     if (!targetGuide) return;
+
+    // 가이드 페이지의 스크롤 컨테이너를 루트로 설정
+    const scrollContainer = document.getElementById('guide-scroll-container');
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -38,8 +42,8 @@ export function WikiGuideSection() {
         });
       },
       {
-        root: null,
-        rootMargin: '-15% 0px -80% 0px',
+        root: scrollContainer, // ✅ null(뷰포트) 대신 스크롤 컨테이너 지정
+        rootMargin: '-10% 0px -80% 0px', // 상단 10% 지점에서 감지
         threshold: 0
       }
     );
@@ -51,16 +55,18 @@ export function WikiGuideSection() {
     return () => observer.disconnect();
   }, [targetGuide]);
 
+  // ✅ [수정] 클릭 시 해당 섹션으로 부드럽게 이동
   const scrollToSection = (index: number) => {
+    const container = document.getElementById('guide-scroll-container');
     const element = document.getElementById(`section-${index}`);
-    if (element) {
-      // 상단 헤더 높이(약 60px) + 여유분(20px) 만큼 보정하여 스크롤
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-  
-      window.scrollTo({
-        top: offsetPosition,
+    
+    if (container && element) {
+      // 컨테이너 내부에서의 상대 위치 계산
+      const headerOffset = 24; // 상단 여백
+      const elementPosition = element.offsetTop;
+      
+      container.scrollTo({
+        top: elementPosition - headerOffset,
         behavior: "smooth"
       });
       
@@ -73,9 +79,7 @@ export function WikiGuideSection() {
 
   return (
     <div className="max-w-[1200px] mx-auto px-6 py-8 pb-32 relative">
-      {/* [수정 포인트 1] items-start: Sticky 동작을 위해 필수
-        화면이 작을 때도 레이아웃이 깨지지 않도록 grid 설정을 유지하되,
-        작은 화면에서는 목차가 아래로 내려가도록 설정했습니다.
+      {/* ✅ items-start: 이게 있어야 sticky가 작동함 (grid 높이만큼 늘어나지 않게 함)
       */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-8 items-start">
         
@@ -94,7 +98,7 @@ export function WikiGuideSection() {
                 key={idx} 
                 id={`section-${idx}`} 
                 ref={el => sectionRefs.current[idx] = el}
-                className="scroll-mt-28" 
+                className="scroll-mt-4" // CSS scroll-margin으로도 보정
               >
                 <RecursiveGuideCard item={item} depth={0} />
               </div>
@@ -105,22 +109,20 @@ export function WikiGuideSection() {
         </div>
 
         {/* 오른쪽: 목차 영역 (Sticky) */}
-        {/* [수정 포인트 2] hidden lg:block 제거 -> 항상 보이게 변경
-          [수정 포인트 3] order-first lg:order-last -> 모바일에서는 목차가 위에 오도록 설정 (선택사항)
-          현재는 기본 순서(콘텐츠 아래)로 두었으니, 모바일에서는 본문 다 읽고 맨 아래에 목차가 나옵니다.
+        {/* ✅ sticky top-8: 스크롤 컨테이너(GuidePage의 div) 기준 상단 8(32px) 위치에 고정됨
+           self-start: 그리드 아이템이 늘어나지 않고 자기 크기만 유지해야 sticky가 먹힘
         */}
-        <aside className="sticky top-4 self-start z-10 transition-all duration-300 w-full lg:w-auto">
-          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-indigo-100/60 max-h-[calc(100vh-120px)] flex flex-col">
-            <h3 className="text-gray-800 font-bold mb-4 flex items-center gap-2 border-b border-gray-100 pb-3 text-sm uppercase tracking-wide">
+        <aside className="sticky top-8 self-start w-full lg:w-auto hidden lg:block">
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-indigo-50/50 max-h-[calc(100vh-120px)] flex flex-col">
+            <h3 className="text-gray-800 font-bold mb-3 flex items-center gap-2 pb-2 border-b border-gray-100 text-sm uppercase tracking-wide">
                <List className="w-4 h-4 text-indigo-500 flex-shrink-0"/> 
-               <span>목차 ({targetGuide.items ? targetGuide.items.length : 0})</span>
+               <span>목차</span>
             </h3>
             
-            {/* 데이터가 없을 경우 안내 메시지 */}
             {!targetGuide.items || targetGuide.items.length === 0 ? (
               <p className="text-sm text-gray-400 py-2">목차 없음</p>
             ) : (
-              <div className="space-y-1 overflow-y-auto pr-1 custom-scrollbar">
+              <div className="space-y-1 overflow-y-auto pr-1 custom-scrollbar max-h-[60vh]">
                 {targetGuide.items.map((item, idx) => {
                   const isActive = activeSection === idx;
                   return (
@@ -128,18 +130,19 @@ export function WikiGuideSection() {
                       key={idx}
                       onClick={() => scrollToSection(idx)}
                       className={`
-                        group flex items-center w-full text-left px-3 py-2.5 rounded-lg transition-all duration-200
+                        group flex items-center w-full text-left px-3 py-2 rounded-lg transition-all duration-200
+                        text-sm
                         ${isActive 
-                          ? 'bg-indigo-50 text-indigo-700 font-bold shadow-sm ring-1 ring-indigo-100' 
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          ? 'bg-indigo-50 text-indigo-700 font-bold' 
+                          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                         }
                       `}
                     >
                       <span className={`
-                        w-1.5 h-1.5 rounded-full mr-3 transition-colors duration-300 flex-shrink-0
-                        ${isActive ? 'bg-indigo-500 scale-125' : 'bg-gray-300 group-hover:bg-indigo-300'}
+                        w-1.5 h-1.5 rounded-full mr-2.5 transition-all duration-300 flex-shrink-0
+                        ${isActive ? 'bg-indigo-500 scale-110' : 'bg-gray-300 group-hover:bg-indigo-300'}
                       `}></span>
-                      <span className="text-sm truncate">{item.label}</span>
+                      <span className="truncate">{item.label}</span>
                     </button>
                   );
                 })}
