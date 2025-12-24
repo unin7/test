@@ -91,7 +91,7 @@ export function QuickAccessButtons() {
           onClick={() => navigate(button.path)}
           className={`
             group relative flex flex-col items-center justify-center 
-            h-[110px] w-full
+            h-[120px] w-full
             bg-white rounded-2xl border border-gray-100
             shadow-[0_2px_8px_rgba(0,0,0,0.03)] 
             
