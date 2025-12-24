@@ -1,6 +1,15 @@
+import { useMemo } from 'react';
 import { Calendar, Clock } from 'lucide-react';
 import { useJsonData } from '../../../hooks/useJsonData';
-import { ScheduleItem } from './AllSchedule'; 
+
+// ✅ 인터페이스 직접 정의 (AllSchedule import 제거)
+interface ScheduleItem {
+  id: string;
+  date: string;
+  title: string;
+  description: string;
+  type: 'birthday' | 'comeback' | 'concert' | 'broadcast' | 'event';
+}
 
 export function EventDday() {
   const { data: schedules, loading } = useJsonData<ScheduleItem[]>('schedules');
