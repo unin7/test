@@ -31,10 +31,9 @@ export function GuidePage() {
                      }`
                   }
                 >
-                  {/* ✅ [수정] 아이콘 중앙 정렬을 위해 flex 및 justify-center 추가 */}
-                  <div className={`flex items-center justify-center w-5 h-5 transition-transform duration-300`}>
-                    {/* 아이콘 크기를 부모에 맞춤 */}
-                    <div className="w-4 h-4">
+                  <div className="flex items-center justify-center w-5 h-5 flex-shrink-0">
+                    {/* 아이콘 크기를 확실히 제한하고 중앙으로 모음 */}
+                    <div className="w-4 h-4 flex items-center justify-center">
                       {section.icon}
                     </div>
                   </div>
