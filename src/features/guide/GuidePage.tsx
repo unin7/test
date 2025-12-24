@@ -15,10 +15,11 @@ const guideSections = [
 export function GuidePage() {
   return (
     <div className="h-full flex flex-col overflow-hidden bg-slate-50/50">
-      {/* 상단 탭: Sticky 필요 없음 (부모가 overflow-hidden이고 여기가 flex-none이라 항상 상단 고정됨) */}
+      {/* 상단 탭 */}
       <div className="flex-none z-30 bg-white/60 backdrop-blur-md border-b border-purple-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-center py-4 overflow-x-auto scrollbar-hide">
+            {/* ... (탭 메뉴 코드는 기존과 동일) ... */}
             <div className="flex gap-2 min-w-max px-2">
               {guideSections.map((section) => (
                 <NavLink
@@ -33,7 +34,6 @@ export function GuidePage() {
                   }
                 >
                   <div className="flex items-center justify-center w-5 h-5 flex-shrink-0">
-                    {/* 🚨 [수정 중요] Object.cloneElement -> React.cloneElement */}
                     {React.cloneElement(section.icon as React.ReactElement, { size: 18, strokeWidth: 2.5 })}
                   </div>
                   <span className="whitespace-nowrap">{section.title}</span>
@@ -44,8 +44,11 @@ export function GuidePage() {
         </div>
       </div>
       
-      {/* 메인 콘텐츠 영역: 스크롤은 여기서 발생함 */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth">
+      {/* ✅ [수정 포인트] 여기에 ID 추가 (id="guide-scroll-container") */}
+      <div 
+        id="guide-scroll-container"
+        className="flex-1 overflow-y-auto custom-scrollbar scroll-smooth relative"
+      >
         <Outlet />
       </div>
     </div>
