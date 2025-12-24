@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, ChevronRight } from 'lucide-react';
 import { useJsonData } from '../../../hooks/useJsonData';
 
-// ✅ 인터페이스 직접 정의 (AllSchedule import 제거)
 interface ScheduleItem {
   id: string;
   date: string;
   title: string;
   description: string;
-  type: 'birthday' | 'comeback' | 'concert' | 'broadcast' | 'event';
+  type: 'birthday' | 'album' | 'concert' | 'broadcast' | 'event';
 }
 
 export function EventDday() {
@@ -28,6 +27,7 @@ export function EventDday() {
       const eventKst = getKstDate(event.date);
       const eventDateOnly = new Date(eventKst);
       eventDateOnly.setUTCHours(0, 0, 0, 0);
+      
       const dDayVal = Math.ceil((eventDateOnly.getTime() - nowKst.getTime()) / (1000 * 60 * 60 * 24));
       return { ...event, dDayVal, eventKst };
     })
@@ -36,39 +36,71 @@ export function EventDday() {
     .slice(0, 4);
   }, [schedules]);
 
-  if (loading) return <div className="p-4 text-center text-gray-400 text-sm">로딩 중...</div>;
+  // 날짜 포맷 (MM.DD)
+  const formatDate = (date: Date) => {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${month}.${day}`;
+  };
+
+  if (loading) return <div className="h-full flex items-center justify-center text-gray-400 text-xs">Loading...</div>;
+  if (!upcomingEvents.length) return <div className="h-full flex items-center justify-center text-gray-400 text-xs">예정된 일정이 없습니다.</div>;
 
   return (
-    <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-gray-100 h-full flex flex-col">
-      <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-4 h-4 text-purple-500" />
-        <h4 className="text-md font-bold text-gray-800">다가오는 일정</h4>
+    <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-sm h-full flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h4 className="text-gray-800 font-bold text-base tracking-tight flex items-center gap-2">
+          Upcoming
+          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>
+        </h4>
+        <button className="text-xs text-gray-400 hover:text-purple-600 flex items-center gap-0.5 transition-colors group">
+          View All <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+        </button>
       </div>
 
-      <div className="space-y-2 flex-1 overflow-hidden">
-        {upcomingEvents.map((item) => (
-          <div key={item.id} className="flex gap-3 items-center group">
-            <div className="w-11 h-7 rounded-full flex items-center justify-center text-[10px] font-bold bg-white border border-gray-100 text-gray-500 group-hover:text-purple-600 shadow-sm transition-all flex-shrink-0">
-              {item.dDayVal === 0 ? "D-Day" : `D-${item.dDayVal}`}
-            </div>
+      {/* List */}
+      <div className="flex-1 flex flex-col gap-1">
+        {upcomingEvents.map((item) => {
+          const isUrgent = item.dDayVal <= 3; // 3일 이내 임박
 
-            <div className="flex-1 bg-white rounded-xl p-2.5 px-3 border border-purple-50/50 hover:border-purple-200 transition-all flex justify-between items-center overflow-hidden">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
-                    item.type === 'birthday' ? 'text-pink-500 bg-pink-50' : 
-                    item.type === 'comeback' ? 'text-purple-500 bg-purple-50' : 'text-gray-400 bg-gray-50'
-                  }`}>{item.type}</span>
-                  <h5 className="font-bold text-gray-800 text-xs truncate">{item.title}</h5>
+          return (
+            <div 
+              key={item.id} 
+              className="group flex items-center gap-4 p-3 rounded-2xl hover:bg-white/80 hover:shadow-sm hover:scale-[1.02] transition-all duration-300 cursor-default"
+            >
+              {/* D-Day Section */}
+              <div className={`flex flex-col items-center justify-center w-10 text-center flex-shrink-0 ${isUrgent ? 'text-purple-600' : 'text-gray-400 group-hover:text-purple-500'}`}>
+                <span className="text-[10px] font-medium leading-none mb-0.5 opacity-80">D-</span>
+                <span className={`text-xl font-black leading-none tracking-tight ${isUrgent ? 'text-purple-600' : 'text-gray-600 group-hover:text-purple-600'}`}>
+                  {item.dDayVal === 0 ? 'Day' : item.dDayVal}
+                </span>
+              </div>
+
+              {/* Divider Line */}
+              <div className="w-[1px] h-8 bg-gray-100 group-hover:bg-purple-100 transition-colors"></div>
+
+              {/* Content Section */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                   <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider
+                    ${item.type === 'birthday' ? 'bg-pink-100 text-pink-500' : 
+                      item.type === 'comeback' || item.type === 'album' ? 'bg-purple-100 text-purple-500' : 
+                      item.type === 'concert' ? 'bg-blue-100 text-blue-500' : 'bg-gray-100 text-gray-500'}
+                   `}>
+                    {item.type}
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-medium tracking-wide">
+                    {formatDate(item.eventKst)}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2 text-[9px] text-gray-400">
-                  <Calendar className="w-2.5 h-2.5" /> 
-                  {item.eventKst.toISOString().split('T')[0].slice(5)} | {item.eventKst.toISOString().split('T')[1].substring(0, 5)}
-                </div>
+                <h5 className="text-sm font-bold text-gray-700 truncate group-hover:text-gray-900 transition-colors">
+                  {item.title}
+                </h5>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
