@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Calendar, Clock, ChevronRight } from 'lucide-react';
+import { Clock, ChevronRight, MoreHorizontal } from 'lucide-react';
 import { useJsonData } from '../../../hooks/useJsonData';
 
 interface ScheduleItem {
@@ -36,71 +36,86 @@ export function EventDday() {
     .slice(0, 4);
   }, [schedules]);
 
-  // 날짜 포맷 (MM.DD)
-  const formatDate = (date: Date) => {
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${month}.${day}`;
+  // 타입별 텍스트 색상 및 라벨 스타일
+  const getTypeStyle = (type: ScheduleItem['type']) => {
+    switch (type) {
+      case 'birthday': return 'text-pink-600';
+      case 'broadcast': return 'text-purple-600';
+      case 'concert': return 'text-blue-600';
+      case 'album': return 'text-indigo-600';
+      default: return 'text-purple-600';
+    }
   };
 
   if (loading) return <div className="h-full flex items-center justify-center text-gray-400 text-xs">Loading...</div>;
-  if (!upcomingEvents.length) return <div className="h-full flex items-center justify-center text-gray-400 text-xs">예정된 일정이 없습니다.</div>;
 
   return (
-    <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-sm h-full flex flex-col">
+    // 전체 배경: 이미지처럼 아주 연한 배경색 위에서 흰색 카드가 돋보이도록 설정
+    <div className="bg-gray-50/50 backdrop-blur-xl rounded-[32px] p-6 border border-white/60 shadow-sm h-full flex flex-col font-sans">
+      
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <h4 className="text-gray-800 font-bold text-base tracking-tight flex items-center gap-2">
-          Upcoming
-          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>
-        </h4>
-        <button className="text-xs text-gray-400 hover:text-purple-600 flex items-center gap-0.5 transition-colors group">
-          View All <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-        </button>
+      <div className="flex items-center gap-3 mb-6 pl-1">
+        <Clock className="w-5 h-5 text-purple-600" />
+        <h4 className="text-gray-800 font-bold text-lg tracking-tight">Today's Schedule</h4>
       </div>
 
-      {/* List */}
-      <div className="flex-1 flex flex-col gap-1">
-        {upcomingEvents.map((item) => {
-          const isUrgent = item.dDayVal <= 3; // 3일 이내 임박
+      {/* Timeline List */}
+      <div className="flex-1 flex flex-col gap-5 overflow-y-auto pr-2 scrollbar-hide">
+        {upcomingEvents.length > 0 ? (
+          upcomingEvents.map((item) => {
+            const isToday = item.dDayVal === 0;
+            const typeColor = getTypeStyle(item.type);
 
-          return (
-            <div 
-              key={item.id} 
-              className="group flex items-center gap-4 p-3 rounded-2xl hover:bg-white/80 hover:shadow-sm hover:scale-[1.02] transition-all duration-300 cursor-default"
-            >
-              {/* D-Day Section */}
-              <div className={`flex flex-col items-center justify-center w-10 text-center flex-shrink-0 ${isUrgent ? 'text-purple-600' : 'text-gray-400 group-hover:text-purple-500'}`}>
-                <span className="text-[10px] font-medium leading-none mb-0.5 opacity-80">D-</span>
-                <span className={`text-xl font-black leading-none tracking-tight ${isUrgent ? 'text-purple-600' : 'text-gray-600 group-hover:text-purple-600'}`}>
-                  {item.dDayVal === 0 ? 'Day' : item.dDayVal}
-                </span>
-              </div>
-
-              {/* Divider Line */}
-              <div className="w-[1px] h-8 bg-gray-100 group-hover:bg-purple-100 transition-colors"></div>
-
-              {/* Content Section */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                   <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider
-                    ${item.type === 'birthday' ? 'bg-pink-100 text-pink-500' : 
-                      item.type === 'comeback' || item.type === 'album' ? 'bg-purple-100 text-purple-500' : 
-                      item.type === 'concert' ? 'bg-blue-100 text-blue-500' : 'bg-gray-100 text-gray-500'}
-                   `}>
-                    {item.type}
-                  </span>
-                  <span className="text-[10px] text-gray-400 font-medium tracking-wide">
-                    {formatDate(item.eventKst)}
-                  </span>
+            return (
+              <div key={item.id} className="flex gap-4 items-start">
+                
+                {/* Left: Time/D-Day Capsule (이미지의 시간 표시 부분) */}
+                <div className="flex-shrink-0 pt-1">
+                  <div className={`
+                    px-3 py-1.5 rounded-full text-xs font-bold shadow-sm border
+                    flex items-center justify-center min-w-[60px]
+                    ${isToday 
+                      ? 'bg-gray-800 text-white border-gray-800' 
+                      : 'bg-white text-gray-600 border-white/60'}
+                  `}>
+                    {isToday ? 'NOW' : `D-${item.dDayVal}`}
+                  </div>
                 </div>
-                <h5 className="text-sm font-bold text-gray-700 truncate group-hover:text-gray-900 transition-colors">
-                  {item.title}
-                </h5>
+
+                {/* Right: Content Card (이미지의 흰색 박스 부분) */}
+                <div className="flex-1 bg-white rounded-2xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-purple-50/30 hover:shadow-md transition-shadow duration-300">
+                  
+                  {/* Card Header: Type & Badge */}
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className={`text-[11px] font-extrabold uppercase tracking-wider ${typeColor}`}>
+                      {item.type}
+                    </span>
+                    {isToday && (
+                      <span className="text-[9px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-md animate-pulse">
+                        ON AIR
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <h5 className="text-[15px] font-bold text-gray-800 mb-1 leading-snug">
+                    {item.title}
+                  </h5>
+
+                  {/* Description (이미지처럼 회색 텍스트로 설명 표시) */}
+                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                    {item.description || "상세 설명이 없습니다."}
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-2 opacity-60">
+             <MoreHorizontal className="w-8 h-8" />
+             <p className="text-xs">일정이 없습니다</p>
+          </div>
+        )}
       </div>
     </div>
   );
