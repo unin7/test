@@ -89,11 +89,13 @@ export function QuickAccessButtons() {
         <button
           key={index}
           onClick={() => navigate(button.path)}
+          style={{ height: '120px' }} 
+          
           className={`
             group relative flex flex-col items-center justify-center 
-            h-[144px] w-full
+            w-full
             bg-white rounded-2xl border border-gray-100
-            shadow-[0_2px_8px_rgba(0,0,0,0.03)] 
+            shadow-[0_2px_8px_rgba(0,0,0,0.03)]
             
             /* 호버 효과: 위로 뜸 + 그림자 진해짐 + 테두리 색상 변경 */
             hover:-translate-y-1 hover:shadow-lg
