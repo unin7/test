@@ -121,6 +121,7 @@
     --color-indigo-400: oklch(.673 .182 276.935);
     --color-indigo-500: oklch(.585 .233 277.117);
     --color-indigo-600: oklch(.511 .262 276.966);
+    --color-indigo-700: oklch(0.45 0.20 265.0);
     --color-purple-50: oklch(.977 .014 308.299);
     --color-purple-100: oklch(.946 .033 307.174);
     --color-purple-200: oklch(.902 .063 306.703);
@@ -134,6 +135,7 @@
     --color-violet-100: oklch(0.95 0.03 292.0);
     --color-violet-200: oklch(0.9 0.06 292.0);
     --color-violet-500: oklch(0.65 0.23 292.0);
+    --color-violet-600: oklch(0.55 0.24 295.0);
     --color-pink-100: oklch(0.948 0.028 342.258);
     --color-pink-200: oklch(0.899 0.061 343.231);
     --color-pink-400: oklch(.718 .202 349.761);
@@ -1765,6 +1767,12 @@
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
   }
 
+  .from-indigo-600 {
+    --tw-gradient-from: var(--color-indigo-600);
+    --tw-gradient-to: rgb(255 255 255 / 0); /* 투명 */
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+
   .from-peach-300 {
     --tw-gradient-from: #ffc79e;
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
@@ -1870,6 +1878,10 @@
   .to-purple-300 {
     --tw-gradient-to: var(--color-purple-300);
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+
+  .to-violet-600 {
+    --tw-gradient-to: var(--color-violet-600);
   }
 
   .to-red-300 {
@@ -2370,6 +2382,11 @@
     --tw-shadow-color: oklch(.902 .063 306.703);
   }
 
+  .shadow-indigo-200 {
+    --tw-shadow-color: var(--color-indigo-200);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+
   @supports (color: color-mix(in lab, red, red)) {
     .shadow-purple-200 {
       --tw-shadow-color: color-mix(in oklab, var(--color-purple-200) var(--tw-shadow-alpha), transparent);
@@ -2791,6 +2808,12 @@
   @media (hover: hover) {
     .hover\:text-indigo-500:hover {
       color: var(--color-indigo-500);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:text-indigo-700:hover {
+      color: var(--color-indigo-700);
     }
   }
 
