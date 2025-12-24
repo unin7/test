@@ -5,7 +5,7 @@ import { useJsonData } from '../../../hooks/useJsonData';
 import { RecursiveGuideCard, GuideItem } from './RecursiveGuideCard';
 
 interface GuideGroup {
-  id: string;
+  id: string; 
   title: string;
   items: GuideItem[];
 }
