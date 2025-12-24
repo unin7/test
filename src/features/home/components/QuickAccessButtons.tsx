@@ -89,7 +89,7 @@ export function QuickAccessButtons() {
         <button
           key={index}
           onClick={() => navigate(button.path)}
-          style={{ height: '88px' }} 
+          style={{ height: '72px' }} 
           
           className={`
             group relative flex flex-col items-center justify-center 
