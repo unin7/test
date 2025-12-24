@@ -36,70 +36,72 @@ export function EventDday() {
     .slice(0, 4);
   }, [schedules]);
 
-  const getTypeStyle = (type: ScheduleItem['type']) => {
+  const getTypeColor = (type: ScheduleItem['type']) => {
     switch (type) {
-      case 'birthday': return 'text-pink-600';
+      case 'birthday': return 'text-pink-500';
       case 'broadcast': return 'text-purple-600';
-      case 'concert': return 'text-blue-600';
-      case 'album': return 'text-indigo-600';
-      default: return 'text-purple-600';
+      case 'concert': return 'text-blue-500';
+      case 'album': return 'text-indigo-500';
+      default: return 'text-emerald-500';
     }
   };
 
   if (loading) return <div className="h-full flex items-center justify-center text-gray-400 text-xs">Loading...</div>;
 
   return (
-    // 배경색 및 스타일 통일 (Glassmorphism)
-    <div className="bg-white/60 backdrop-blur-md rounded-2xl p-5 border border-white/50 shadow-sm h-full flex flex-col font-sans">
+    <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 border border-white/50 shadow-sm h-full flex flex-col font-sans">
       
       {/* Header */}
-      <div className="flex items-center gap-2 mb-4 pl-1">
-        <Clock className="w-4 h-4 text-purple-600" />
-        <h4 className="text-gray-800 font-bold text-base tracking-tight">Today's Schedule</h4>
+      <div className="flex items-center gap-3 mb-6 pl-1">
+        <Clock className="w-5 h-5 text-purple-600" />
+        <h4 className="text-gray-800 font-bold text-lg tracking-tight">D-day</h4>
       </div>
 
       {/* Timeline List */}
-      <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-2 scrollbar-hide">
+      <div className="flex-1 flex flex-col gap-5 overflow-y-auto pr-2 scrollbar-hide">
         {upcomingEvents.length > 0 ? (
           upcomingEvents.map((item) => {
             const isToday = item.dDayVal === 0;
-            const typeColor = getTypeStyle(item.type);
+            const typeColor = getTypeColor(item.type);
 
             return (
-              <div key={item.id} className="flex gap-3 items-start">
+              <div key={item.id} className="flex gap-4 items-start group">
                 
-                {/* Left: Capsule */}
                 <div className="flex-shrink-0 pt-1">
                   <div className={`
-                    px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm border
-                    flex items-center justify-center min-w-[50px]
+                    px-3 py-1.5 rounded-full text-[12px] font-bold shadow-sm border
+                    flex items-center justify-center min-w-[64px] tracking-wide
+                    transition-colors duration-200
                     ${isToday 
                       ? 'bg-gray-800 text-white border-gray-800' 
-                      : 'bg-white text-gray-500 border-white/60'}
+                      : 'bg-white text-gray-500 border-white/60 group-hover:border-purple-200 group-hover:text-purple-600'}
                   `}>
                     {isToday ? 'NOW' : `D-${item.dDayVal}`}
                   </div>
                 </div>
 
-                {/* Right: Content Card */}
-                <div className="flex-1 bg-white rounded-xl p-3 shadow-[0_2px_10px_-5px_rgba(0,0,0,0.05)] border border-purple-50/50 hover:shadow-md hover:border-purple-100 transition-all duration-300">
+                {/* [Right] White Card */}
+                <div className="flex-1 bg-white rounded-2xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-purple-50/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                   
-                  <div className="flex items-center justify-between mb-1">
-                    <span className={`text-[9px] font-extrabold uppercase tracking-wider ${typeColor}`}>
+                  {/* Badge & Type */}
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className={`text-[10px] font-extrabold uppercase tracking-widest ${typeColor}`}>
                       {item.type}
                     </span>
                     {isToday && (
-                      <span className="text-[8px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded animate-pulse">
+                      <span className="text-[9px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded animate-pulse">
                         ON AIR
                       </span>
                     )}
                   </div>
 
-                  <h5 className="text-sm font-bold text-gray-800 mb-0.5 leading-snug">
+                  {/* Title */}
+                  <h5 className="text-[15px] font-bold text-gray-800 mb-1 leading-snug">
                     {item.title}
                   </h5>
 
-                  <p className="text-[11px] text-gray-400 leading-relaxed line-clamp-1">
+                  {/* Description */}
+                  <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 font-medium">
                     {item.description || "상세 설명이 없습니다."}
                   </p>
                 </div>
@@ -108,7 +110,7 @@ export function EventDday() {
           })
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-2 opacity-60">
-             <MoreHorizontal className="w-6 h-6" />
+             <MoreHorizontal className="w-8 h-8" />
              <p className="text-xs">일정이 없습니다</p>
           </div>
         )}
