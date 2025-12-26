@@ -85,23 +85,29 @@ export function AllSchedule() {
 
   return (
     <div className="w-full h-full p-6 overflow-x-auto">
-      {/* [Layout Wrapper]
-        - min-w-[1400px]: 레이아웃 깨짐 방지
-        - h-[800px]: 전체 높이 고정 (모든 패널이 이 높이를 따름)
-        - flex gap-6: 1:2:1 비율 배치를 위한 Flex 컨테이너
+      {/* [통합 카드 컨테이너] 
+        - min-w-[1400px]: 내부 비율(1:2:1) 유지
+        - h-[750px]: 달력 정사각형 비율에 맞춘 고정 높이
+        - 하나의 큰 박스 안에 divide-x로 구역을 나눔
       */}
-      <div className="min-w-[1400px] h-[800px] flex flex-row gap-6">
+      <div className="min-w-[1400px] h-[750px] bg-white/70 backdrop-blur-xl rounded-[32px] shadow-sm border border-white/60 flex flex-row divide-x divide-purple-50/50">
         
         {/* =======================================================
             1. [Left] Upcoming List (Flex: 1)
+            - overflow-hidden: 부모 영역 넘침 방지
            ======================================================= */}
-        <div className="flex-1 min-w-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-6 shadow-sm border border-white/60 flex flex-col h-full overflow-hidden">
+        <div className="flex-1 flex flex-col h-full overflow-hidden p-6">
           <div className="flex items-center gap-2 mb-6 pl-1 flex-shrink-0">
             <Clock className="w-5 h-5 text-purple-500" />
             <h4 className="text-gray-800 font-bold text-lg">Upcoming</h4>
           </div>
           
-          <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+          {/* [스크롤 영역] 
+            - flex-1: 남은 공간 채움
+            - overflow-y-auto: 세로 스크롤
+            - [&::-webkit-scrollbar]:hidden: 스크롤바 숨김 (Tailwind 임의설정)
+          */}
+          <div className="flex-1 overflow-y-auto space-y-3 [&::-webkit-scrollbar]:hidden">
             {schedules?.map((event) => (
               <button
                 key={event.id}
@@ -110,7 +116,7 @@ export function AllSchedule() {
                   setCurrentDate(new Date(event.date));
                 }}
                 className={`
-                  w-full p-4 rounded-2xl transition-all duration-200 text-left border relative group flex items-center gap-4
+                  w-full p-4 rounded-2xl transition-all duration-200 text-left border relative group flex items-center gap-4 flex-shrink-0
                   ${selectedEvent?.id === event.id 
                     ? 'bg-white shadow-md border-purple-100 scale-[1.02]' 
                     : 'bg-white/40 hover:bg-white hover:border-purple-50 border-transparent'}
@@ -139,10 +145,9 @@ export function AllSchedule() {
 
         {/* =======================================================
             2. [Center] Calendar (Flex: 2)
-            - flex-[2]: 좌우 패널보다 2배 넓게 차지
-            - min-w-0: 내부 컨텐츠가 Flex 비율을 깨지 않도록 설정
+            - 가장 넓은 영역 차지
            ======================================================= */}
-        <div className="flex-[2] min-w-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-8 shadow-sm border border-purple-50 flex flex-col h-full overflow-hidden">
+        <div className="flex-[2] flex flex-col h-full p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8 flex-shrink-0">
             <h3 className="text-gray-800 font-bold flex items-center gap-3 text-3xl tracking-tight ml-2">
@@ -168,11 +173,8 @@ export function AllSchedule() {
             ))}
           </div>
 
-          {/* Days Grid 
-              - content-start: 행이 부족해도 위로 밀착시키고 아래에 빈 공간 유지 
-              - overflow-y-auto: 높이가 넘치면 스크롤 (하지만 800px이면 보통 안 넘침)
-          */}
-          <div className="grid grid-cols-7 gap-4 flex-1 content-start px-2 overflow-y-auto custom-scrollbar">
+          {/* Days Grid */}
+          <div className="grid grid-cols-7 gap-4 flex-1 content-start px-2 overflow-y-auto [&::-webkit-scrollbar]:hidden">
             {Array.from({ length: startingDayOfWeek }).map((_, i) => <div key={`empty-${i}`} />)}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
@@ -194,7 +196,7 @@ export function AllSchedule() {
                   `}
                 >
                   <span className={`text-lg mb-1 ${event ? 'font-bold' : ''}`}>{day}</span>
-                  {event && <span className="text-xl group-hover:-translate-y-1 transition-transform">{getEventIcon(event.type)}</span>}
+                  {event && <span className="text-xl group-hover:-translate-y-1 transition-transform">{event.icon}</span>}
                 </button>
               );
             })}
@@ -203,8 +205,9 @@ export function AllSchedule() {
 
         {/* =======================================================
             3. [Right] Details (Flex: 1)
+            - justify-center: 내용은 중앙 정렬
            ======================================================= */}
-        <div className="flex-1 min-w-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-8 shadow-sm border border-white/60 flex flex-col justify-center text-center h-full relative overflow-hidden">
+        <div className="flex-1 flex flex-col justify-center h-full p-8 relative overflow-hidden">
           {selectedEvent ? (
             <div className="animate-in fade-in zoom-in duration-300 h-full flex flex-col items-center justify-center">
                <div className="w-32 h-32 mx-auto bg-white rounded-[2.5rem] shadow-sm flex items-center justify-center text-7xl mb-8 border border-purple-50">
@@ -215,11 +218,11 @@ export function AllSchedule() {
                 {selectedEvent.type}
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-800 mb-5 leading-tight break-keep px-4">
+              <h2 className="text-3xl font-bold text-gray-800 mb-5 leading-tight break-keep px-4 text-center">
                 {selectedEvent.title}
               </h2>
               
-              <p className="text-base text-gray-500 mb-12 leading-relaxed px-4 line-clamp-4">
+              <p className="text-base text-gray-500 mb-12 leading-relaxed px-4 line-clamp-4 text-center">
                 {selectedEvent.description}
               </p>
 
