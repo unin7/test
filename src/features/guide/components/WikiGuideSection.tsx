@@ -112,7 +112,7 @@ export function WikiGuideSection() {
         {/* ✅ sticky top-8: 스크롤 컨테이너(GuidePage의 div) 기준 상단 8(32px) 위치에 고정됨
            self-start: 그리드 아이템이 늘어나지 않고 자기 크기만 유지해야 sticky가 먹힘
         */}
-        <aside className="sticky top-8 self-start w-full lg:w-auto hidden lg:block">
+        <aside className="sticky top-8 self-start w-full lg:w-auto">
           <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-indigo-50/50 max-h-[calc(100vh-120px)] flex flex-col">
             <h3 className="text-gray-800 font-bold mb-3 flex items-center gap-2 pb-2 border-b border-gray-100 text-sm uppercase tracking-wide">
                <List className="w-4 h-4 text-indigo-500 flex-shrink-0"/> 
