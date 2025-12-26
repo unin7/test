@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, MapPin, Info } from 'lucide-react';
 import { useJsonData } from '../../../hooks/useJsonData';
 
-// ✅ 데이터 타입 정의
 interface ScheduleItem {
   id: string;
   date: string;
@@ -22,14 +21,12 @@ export function AllSchedule() {
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1)); 
   const [selectedEvent, setSelectedEvent] = useState<ScheduleItem | null>(null);
 
-  // 초기 로드시 첫 번째 이벤트 선택
   useEffect(() => {
     if (schedules && schedules.length > 0 && !selectedEvent) {
       setSelectedEvent(schedules[0]);
     }
   }, [schedules]);
 
-  // 달력 날짜 계산
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -65,7 +62,6 @@ export function AllSchedule() {
     });
   };
 
-  // 아이콘 매핑
   const getEventIcon = (type: ScheduleItem['type']) => {
     switch (type) {
       case 'birthday': return '🎂';
@@ -77,7 +73,6 @@ export function AllSchedule() {
     }
   };
 
-  // 색상 매핑
   const getEventColor = (type: ScheduleItem['type']) => {
     switch (type) {
       case 'birthday': return 'bg-pink-100 text-pink-600 ring-pink-200';
@@ -89,35 +84,30 @@ export function AllSchedule() {
   };
 
   return (
-    // [Container] 화면이 작아지면 가로 스크롤 생성
     <div className="w-full h-full p-6 overflow-x-auto">
-      
-      {/* [Layout Wrapper] 
-          - min-w-[1400px]: 레이아웃 깨짐 방지 (최소 너비 확보)
-          - h-[780px]: 전체 높이를 달력 비율에 맞춰 고정 (직사각형 형태 유지)
+      {/* [Layout Wrapper]
+        - min-w-[1400px]: 레이아웃 깨짐 방지
+        - h-[800px]: 전체 높이 고정 (모든 패널이 이 높이를 따름)
+        - flex gap-6: 1:2:1 비율 배치를 위한 Flex 컨테이너
       */}
-      <div className="min-w-[1400px] h-[780px] flex flex-row gap-6">
+      <div className="min-w-[1400px] h-[800px] flex flex-row gap-6">
         
         {/* =======================================================
-            1. [Left] Upcoming List 
-            - h-full: 부모 높이(780px)를 가득 채움
-            - overflow-hidden & flex-col: 내부 스크롤 구조 생성
+            1. [Left] Upcoming List (Flex: 1)
            ======================================================= */}
-        <div className="w-[340px] flex-shrink-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-6 shadow-sm border border-white/60 flex flex-col h-full overflow-hidden">
+        <div className="flex-1 min-w-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-6 shadow-sm border border-white/60 flex flex-col h-full overflow-hidden">
           <div className="flex items-center gap-2 mb-6 pl-1 flex-shrink-0">
             <Clock className="w-5 h-5 text-purple-500" />
             <h4 className="text-gray-800 font-bold text-lg">Upcoming</h4>
           </div>
           
-          {/* 리스트 영역: 남는 공간(flex-1)을 차지하고 넘치면 스크롤(overflow-y-auto) */}
           <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
             {schedules?.map((event) => (
               <button
                 key={event.id}
                 onClick={() => {
                   setSelectedEvent(event);
-                  const itemDate = new Date(event.date);
-                  setCurrentDate(itemDate);
+                  setCurrentDate(new Date(event.date));
                 }}
                 className={`
                   w-full p-4 rounded-2xl transition-all duration-200 text-left border relative group flex items-center gap-4
@@ -148,13 +138,13 @@ export function AllSchedule() {
         </div>
 
         {/* =======================================================
-            2. [Center] Calendar 
-            - h-full: 좌우 패널과 높이 동일하게 유지
-            - flex-1: 남은 가로 공간을 모두 차지
+            2. [Center] Calendar (Flex: 2)
+            - flex-[2]: 좌우 패널보다 2배 넓게 차지
+            - min-w-0: 내부 컨텐츠가 Flex 비율을 깨지 않도록 설정
            ======================================================= */}
-        <div className="flex-1 bg-white/70 backdrop-blur-xl rounded-[32px] p-8 shadow-sm border border-purple-50 flex flex-col h-full overflow-hidden">
+        <div className="flex-[2] min-w-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-8 shadow-sm border border-purple-50 flex flex-col h-full overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6 flex-shrink-0">
+          <div className="flex items-center justify-between mb-8 flex-shrink-0">
             <h3 className="text-gray-800 font-bold flex items-center gap-3 text-3xl tracking-tight ml-2">
               <CalendarIcon className="w-8 h-8 text-purple-500" />
               {monthNames[currentDate.getMonth()]} <span className="text-purple-300 font-light">{currentDate.getFullYear()}</span>
@@ -178,7 +168,10 @@ export function AllSchedule() {
             ))}
           </div>
 
-          {/* Days Grid: 남은 높이를 꽉 채우도록 설정 */}
+          {/* Days Grid 
+              - content-start: 행이 부족해도 위로 밀착시키고 아래에 빈 공간 유지 
+              - overflow-y-auto: 높이가 넘치면 스크롤 (하지만 800px이면 보통 안 넘침)
+          */}
           <div className="grid grid-cols-7 gap-4 flex-1 content-start px-2 overflow-y-auto custom-scrollbar">
             {Array.from({ length: startingDayOfWeek }).map((_, i) => <div key={`empty-${i}`} />)}
             {Array.from({ length: daysInMonth }).map((_, i) => {
@@ -209,10 +202,9 @@ export function AllSchedule() {
         </div>
 
         {/* =======================================================
-            3. [Right] Details 
-            - h-full: 높이 통일
+            3. [Right] Details (Flex: 1)
            ======================================================= */}
-        <div className="w-[360px] flex-shrink-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-8 shadow-sm border border-white/60 flex flex-col justify-center text-center h-full relative overflow-hidden">
+        <div className="flex-1 min-w-0 bg-white/70 backdrop-blur-xl rounded-[32px] p-8 shadow-sm border border-white/60 flex flex-col justify-center text-center h-full relative overflow-hidden">
           {selectedEvent ? (
             <div className="animate-in fade-in zoom-in duration-300 h-full flex flex-col items-center justify-center">
                <div className="w-32 h-32 mx-auto bg-white rounded-[2.5rem] shadow-sm flex items-center justify-center text-7xl mb-8 border border-purple-50">
@@ -248,9 +240,8 @@ export function AllSchedule() {
                     <MapPin size={20} />
                   </div>
                   <div>
-                    <p className="text-[11px] text-gray-400 uppercase tracking-wider font-bold">Time</p>
-                    {/* 시간 데이터가 없으면 기본값 표시 */}
-                    <p className="text-base font-bold text-gray-700 mt-0.5">All Day</p>
+                    <p className="text-[11px] text-gray-400 uppercase tracking-wider font-bold">Location</p>
+                    <p className="text-base font-bold text-gray-700 mt-0.5">Seoul, Korea</p>
                   </div>
                 </div>
               </div>
